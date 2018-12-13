@@ -24,6 +24,7 @@ const config = {
                 c.secret = app.secret;
                 c.access_token = "test";
                 c.host = app.host;
+                c.client_side = app.client_side;
                 c._ok = true;
                 resolve();
               }

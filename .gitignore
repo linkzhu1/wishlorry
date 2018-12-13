@@ -1,3 +1,4 @@
 node_modules/*
 vue/dist/*
 .vscode
+package-lock.json
