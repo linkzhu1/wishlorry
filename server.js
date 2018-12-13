@@ -36,6 +36,10 @@ const check_login = function(req, res, next) {
       }
     });
 };
+app.use(function(req, res, next) {
+  console.log(`Request from IP:${req.ip}`);
+  next();
+});
 app.use(express.static("./vue/dist"));
 app.use(cookie_parser());
 app.use(body_parser.json());
