@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Message } from "element-ui";
 const _axios_call = function(config, callback, errorCallback, loader) {
   axios(config)
     .then(function(resp) {
@@ -11,7 +12,7 @@ const _axios_call = function(config, callback, errorCallback, loader) {
         if (errorCallback) {
           errorCallback(error.response.data);
         } else {
-          console.log(error.response.data);
+          Message.error(error.response.data.msg);
         }
       } else {
         console.log(error);

@@ -16,7 +16,9 @@ module.exports = {
       "vuex",
       "axios",
       "element-ui",
-      "element-ui/lib/theme-chalk/index.css"
+      "element-ui/lib/theme-chalk/index.css",
+      "@fancyapps/fancybox",
+      "@fancyapps/fancybox/dist/jquery.fancybox.css"
     ]
   },
   output: {

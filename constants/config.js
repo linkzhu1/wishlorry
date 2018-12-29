@@ -6,6 +6,7 @@ const config = {
   agent_id: null,
   secret: null,
   access_token: null,
+  star_ddl: null,
   init: function() {
     var c = this;
     return new Promise(function(resolve, reject) {
@@ -25,6 +26,7 @@ const config = {
                 c.access_token = "test";
                 c.host = app.host;
                 c.client_side = app.client_side;
+                c.star_ddl = app.star_ddl;
                 c._ok = true;
                 resolve();
               }

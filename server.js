@@ -36,10 +36,10 @@ const check_login = function(req, res, next) {
       }
     });
 };
-app.use(function(req, res, next) {
-  console.log(`Request from IP:${req.headers["x-forwarded-for"] || req.ip}`);
-  next();
-});
+// app.use(function(req, res, next) {
+//   console.log(`Request from IP:${req.headers["x-forwarded-for"] || req.ip}`);
+//   next();
+// });
 app.use(express.static("./vue/dist"));
 app.use(cookie_parser());
 app.use(body_parser.json());
@@ -68,6 +68,7 @@ app.post(
 app.get("/api/get-user-pic/:user_id", api_handlers.get_pic_handler);
 app.post("/api/update-des", api_handlers.update_des_handler);
 app.post("/api/star-user", api_handlers.star_user_handler);
+app.post("/api/read-rule", api_handlers.read_handler);
 
 config.init().then(() => {
   app.listen(port, () => console.log(`WishLorry Server Start on port ${port}`));

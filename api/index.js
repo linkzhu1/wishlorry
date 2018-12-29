@@ -29,7 +29,8 @@ const apis = {
         user_data_list.push({
           user_id: user.user_id,
           self: user.user_id == user_id,
-          num_star: (user.num_star && user.num_star.length) || 0
+          num_star: (user.star && user.star.length) || 0,
+          rule_read: user.rule_read
         });
       });
       res.json(user_data_list);
@@ -77,14 +78,18 @@ const apis = {
     var des = req.body.des;
     if (!des) res.json({});
     else {
-      User.update_des(user_id, des)
-        .then(mongo_result => {
-          res.json({});
-        })
-        .catch(msg => {
-          console.log(msg);
-          res.send("Update Des Failed");
-        });
+      if (des.length < 20) {
+        res.status(400).json({ msg: "长度小于20" });
+      } else {
+        User.update_des(user_id, des)
+          .then(mongo_result => {
+            res.json({});
+          })
+          .catch(msg => {
+            console.log(msg);
+            res.send("Update Des Failed");
+          });
+      }
     }
   },
   star_user_handler: function(req, res) {
@@ -98,10 +103,20 @@ const apis = {
           res.json({});
         })
         .catch(msg => {
-          console.log(msg);
-          res.send("Update star failed");
+          res.status(400).json({ msg: msg });
         });
     }
+  },
+  read_handler: function(req, res) {
+    var self_user_id = req.user_id;
+    User.read_rule(self_user_id)
+      .then(mongo_result => {
+        res.json({});
+      })
+      .catch(msg => {
+        console.log(msg);
+        res.send("Read rule failed");
+      });
   }
 };
 module.exports = apis;

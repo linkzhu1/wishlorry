@@ -3,6 +3,7 @@ const col_name = "user";
 const mongo_client = require("./mongo_client");
 mongo_client.connect();
 const mongo = require("mongodb");
+const config = require("../constants/config");
 const model = {
   _get_collection: function() {
     var db = mongo_client.getDB(db_name);
@@ -92,8 +93,40 @@ const model = {
   star_user: function(self_user_id, user_id) {
     collection = this._get_collection();
     return new Promise(function(resolve, reject) {
+      var now = Date.now();
+      if (config.star_ddl && config.star_ddl < now) {
+        reject("点赞已截止");
+        return;
+      }
       collection
-        .updateOne({ user_id: user_id }, { $addToSet: { star: self_user_id } })
+        .countDocuments({ star: self_user_id })
+        .then(count => {
+          if (count < 5) {
+            collection
+              .updateOne(
+                { user_id: user_id },
+                { $addToSet: { star: self_user_id } }
+              )
+              .then(result => {
+                resolve(result);
+              })
+              .catch(mongo_error => {
+                reject(`Mongo Error ${mongo_error.message}`);
+              });
+          } else {
+            reject("限点赞5个人");
+          }
+        })
+        .catch(mongo_error => {
+          reject(`Mongo Error ${mongo_error.message}`);
+        });
+    });
+  },
+  read_rule: function(self_user_id) {
+    collection = this._get_collection();
+    return new Promise(function(resolve, reject) {
+      collection
+        .updateOne({ user_id: self_user_id }, { $set: { rule_read: true } })
         .then(result => {
           resolve(result);
         })
@@ -104,3 +137,4 @@ const model = {
   }
 };
 module.exports = model;
+
