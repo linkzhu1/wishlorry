@@ -111,7 +111,7 @@
   font-size: 10px;
 }
 .star-on {
-  font-size: 18px;
+  font-size: 15px;
   color: #e6a23c;
 }
 .star-off {
