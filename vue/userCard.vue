@@ -136,7 +136,7 @@ export default {
   props: ["user_id", "auto_refresh"],
   data() {
     return {
-      user: {},
+      user: null,
       reload: 0,
       in_edit: false,
       des_input: null,

@@ -56,8 +56,8 @@ const model = {
       collection
         .findOne({ user_id: user_id })
         .then(user => {
-          if (!user) reject("User Not Found");
-          resolve(user);
+          if (!user) reject(`User Not Found: ${user_id}`);
+          else resolve(user);
         })
         .catch(mongo_error => {
           reject(`Mongo Error ${mongo_error.message}`);

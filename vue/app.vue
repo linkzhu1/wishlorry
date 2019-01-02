@@ -16,7 +16,7 @@
           <el-collapse-item title="规则阅读"
                             name="1">
             <h4>活动规则</h4>
-            <p>1、请上传一张你与“WISH”“W”（单词或字母）的合影。</p>
+            <p>1、请上传一张你与“WISH”或“W”（单词或字母）的合影。</p>
             <p>2、并留下你想说的话。（字数不能少于20个字哦~）</p>
             <p>即可参与本次活动，照片被点赞后将不得修改替换。快快上传照片并为自己拉票吧~</p>
             <h4>点赞规则</h4>
@@ -24,7 +24,10 @@
             <p>点赞次数有限哦~每人仅有5次点赞机会，点赞后不能取消。</p>
             <h4 style="color:#ff4949;">活动截止时间为：2019年1月18日17:00</h4>
             <el-button @click.prevent="read"
-                       type="text">已读，进入活动！</el-button>
+                       type="text"
+                       icon="el-icon-d-arrow-right"
+                       class="btn-read">已读，进入活动！
+            </el-button>
           </el-collapse-item>
           <el-collapse-item title="排名"
                             v-if="self && self.rule_read"
@@ -85,10 +88,7 @@
         </el-collapse>
       </el-main>
       <el-footer class="footer">
-        <span>Designed by linkzhu</span>
-        <span>
-          <a>© 2019 ContextLogic Inc.</a>
-        </span>
+        <span>Designed by Wish</span>
       </el-footer>
     </el-container>
   </div>
@@ -125,6 +125,9 @@
 }
 .rank-highlight {
   background-color: #ebeef5;
+}
+.btn-read {
+  text-align: center;
 }
 </style>
 <script>
