@@ -2,7 +2,9 @@
   <el-card class="box-card">
     <div slot="header"
          v-if="user">
-      <span>{{ user.user_id }}</span>
+      <span class="small-title"
+            v-if="!user.self">{{ user.user_id }}</span>
+      <span v-else>{{ user.user_id }}</span>
       <div style="float:right">
         <div @click.prevent="beforeStar">
           <div v-show="user.self">
@@ -141,6 +143,9 @@
   word-break: break-all;
   white-space: normal;
   overflow: auto;
+}
+.small-title {
+  font-size: 10px;
 }
 .input-des {
   font-family: "ZCOOL KuaiLe", cursive;
