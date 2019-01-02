@@ -10,11 +10,16 @@
         <p>2019新春年会集赞活动开始了！</p>
         <p>想获得现金红包大奖吗？</p>
         <p>按”赞“数排名年会现场领取红包大奖，超大红包等你来拿！！</p>
-        <p>快来加入年会集赞活动吧！！</p>
+        <p>快来加入年会集赞活动吧！！
+          <i class="fas fa-snowflake fa-spin"
+             style="color:#409eff;"></i>
+        </p>
         <el-collapse accordion
                      v-model="active_names">
-          <el-collapse-item title="规则阅读"
-                            name="1">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <i class="fas fa-book fa-pull-left"></i>规则阅读
+            </template>
             <h4>活动规则</h4>
             <p>1、请上传一张你与“WISH”或“W”（单词或字母）的合影。</p>
             <p>2、并留下你想说的话。（字数不能少于20个字哦~）</p>
@@ -25,27 +30,31 @@
             <h4 style="color:#ff4949;">活动截止时间为：2019年1月18日17:00</h4>
             <el-button @click.prevent="read"
                        type="text"
-                       icon="el-icon-d-arrow-right"
-                       class="btn-read">已读，进入活动！
+                       class="btn-read">
+              <i class="fas fa-angle-double-right fa-pull-left"></i>已读，进入活动！
             </el-button>
           </el-collapse-item>
-          <el-collapse-item title="排名"
-                            v-if="self && self.rule_read"
+          <el-collapse-item v-if="self && self.rule_read"
                             name="3">
+            <template slot="title">
+              <i class="fas fa-list-ol fa-pull-left"></i>排名
+            </template>
             <div v-for="user in sorted_list"
                  :key="user.user_id"
                  :class="rankClass(user)">
-              <span>{{user.user_id}}</span>
+              <span>{{user.user_id}}
+              </span>
               <div style="float:right">
-                <i class="el-icon-star-on rank-star">
-                  {{ user.num_star }}
-                </i>
+                <i class="fas fa-heart rank-star">
+                </i>{{ user.num_star }}
               </div>
             </div>
           </el-collapse-item>
-          <el-collapse-item title="点赞"
-                            v-if="self && self.rule_read"
+          <el-collapse-item v-if="self && self.rule_read"
                             name="2">
+            <template slot="title">
+              <i class="far fa-heart fa-pull-left"></i>点赞
+            </template>
             <el-row v-if="self">
               <user-card :user_id="self.user_id"
                          :auto_refresh="auto_refresh" />
@@ -53,7 +62,8 @@
             <br/>
             <el-row>
               <el-input placeholder="感兴趣的用户"
-                        v-model="re_str">
+                        v-model="re_str"
+                        class="input-search">
                 <el-button @click="search"
                            slot="append"
                            class="el-icon-search">
@@ -118,7 +128,8 @@
   text-align: center;
 }
 .rank-star {
-  color: #e6a23c;
+  color: #f56c6c;
+  margin-right: 5px;
 }
 .rank-item {
   font-size: 15px;
@@ -127,7 +138,10 @@
   background-color: #ebeef5;
 }
 .btn-read {
-  text-align: center;
+  font-family: "ZCOOL KuaiLe", cursive;
+}
+.input-search {
+  font-family: "ZCOOL KuaiLe", cursive;
 }
 </style>
 <script>

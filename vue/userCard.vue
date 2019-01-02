@@ -3,14 +3,22 @@
     <div slot="header"
          v-if="user">
       <span>{{ user.user_id }}</span>
-      <span>
-        <div style="float:right">
-          <i :class="starClass"
-             @click.prevent="beforeStar">
-            {{ user.num_star }}
-          </i>
+      <div style="float:right">
+        <div @click.prevent="beforeStar">
+          <div v-show="user.self">
+            <i class="fas fa-heart self-star">
+            </i>{{ user.num_star }}
+          </div>
+          <div v-show="!user.self && user.in_star">
+            <i class="fas fa-heart star-on">
+            </i>{{ user.num_star }}
+          </div>
+          <div v-show="!user.self && !user.in_star">
+            <i class="far fa-heart star-off">
+            </i>{{ user.num_star }}
+          </div>
         </div>
-      </span>
+      </div>
     </div>
     <el-row v-if="user"
             type="flex"
@@ -48,6 +56,7 @@
     <el-row v-show="in_edit">
       <el-input type="textarea"
                 autosize
+                class="input-des"
                 placeholder="在这儿留下你想说的话哦～"
                 v-model="des_input">
       </el-input>
@@ -72,6 +81,7 @@
     <el-dialog v-if="user"
                title="点赞"
                :visible.sync="show_modal"
+               class="dialog"
                width="100%">
       <span>
         确定要给{{ user.user_id }} 点赞吗？点赞次数有限哦~每人仅有5次机会，点赞后不能取消。
@@ -112,14 +122,17 @@
 }
 .star-on {
   font-size: 15px;
-  color: #e6a23c;
+  color: #f56c6c;
+  margin-right: 5px;
 }
 .star-off {
   font-size: 15px;
+  margin-right: 5px;
 }
 .self-star {
   font-size: 18px;
-  color: #e6a23c;
+  color: #f56c6c;
+  margin-right: 5px;
 }
 .des-container {
   width: 100%;
@@ -129,6 +142,12 @@
   white-space: normal;
   overflow: auto;
 }
+.input-des {
+  font-family: "ZCOOL KuaiLe", cursive;
+}
+.dialog {
+  font-family: "ZCOOL KuaiLe", cursive;
+}
 </style>
 <script>
 import { Message } from "element-ui";
@@ -136,7 +155,7 @@ export default {
   props: ["user_id", "auto_refresh"],
   data() {
     return {
-      user: null,
+      user: {},
       reload: 0,
       in_edit: false,
       des_input: null,
@@ -147,13 +166,6 @@ export default {
   computed: {
     box: function() {
       return $(this.$el).find(".box");
-    },
-    starClass: function() {
-      var vm = this;
-      if (vm.user.in_star)
-        return "el-icon-star-on star-on font-effect-shadow-multiple";
-      else if (vm.user.self) return "el-icon-star-on self-star";
-      else return "el-icon-star-off star-off";
     },
     plusClass: function() {
       return "el-icon-plus icon-plus";
@@ -223,7 +235,7 @@ export default {
       },
       opts: {}
     });
-    this.timer = setInterval(func, 5000);
+    this.timer = setInterval(func, 60000);
   }
 };
 </script>
