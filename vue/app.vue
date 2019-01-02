@@ -1,64 +1,96 @@
 <template>
-  <div class="background">
-    <el-collapse accordion
-                 v-model="active_names">
-      <el-collapse-item title="活动规则"
-                        name="1">
-        <el-card>
-          <p>年会集赞活动开始了！</p>
-          <p>你想获得现金红包大礼吗？</p>
-          <p>快来加入我们集赞活动吧！！</p>
-          <p>进入活动前请仔细阅读规则哦~</p>
-          <p>1、请上传一张你与“WISH”“W”（单词或字母）的合影。</p>
-          <p>2、然后留下你想说的话。（字数不能少于20个字哦~）</p>
-          <p>3、同时你也可以为你喜欢的照片点赞。</p>
-          <p>4、点赞次数有限哦~每人仅有5次机会，点赞后不能取消。</p>
-          <p>5、活动截止时间为：2019年1月18日17:00</p>
-          <el-button @click.prevent="read"
-                     type="text">已读，进入活动！</el-button>
-        </el-card>
-      </el-collapse-item>
-      <el-collapse-item title="排名"
-                        v-if="self && self.rule_read"
-                        name="3">
-        <div v-for="user in sortedList"
-             :key="user.user_id">
-          <span>{{user.user_id}}</span>
-          <div style="float:right">
-            <i class="el-icon-star-on">
-              {{ user.num_star }}
-            </i>
-          </div>
+  <div class="">
+    <el-container>
+      <el-header class="header">
+        <div>
+          <h3 class="header-title">"筑梦想·wish年”</h3>
         </div>
-      </el-collapse-item>
-      <el-collapse-item title="点赞"
-                        v-if="self && self.rule_read"
-                        name="2">
-        <el-row v-if="self">
-          <user-card :user_id="self.user_id" />
-        </el-row>
-        <br/>
-        <el-row>
-          <el-input placeholder="感兴趣的用户"
-                    v-model="re_str">
-            <el-button @click="search"
-                       slot="append"
-                       class="el-icon-search">
-            </el-button>
-          </el-input>
-        </el-row>
-        <el-row :gutter="20"
-                v-for="part in other_list_part"
-                :key="part.id">
-          <el-col :span="24/num_part"
-                  v-for="user in part"
-                  :key="user.user_id">
+      </el-header>
+      <el-main class="main">
+        <p>2019新春年会集赞活动开始了！</p>
+        <p>想获得现金红包大奖吗？</p>
+        <p>按”赞“数排名年会现场领取红包大奖，超大红包等你来拿！！</p>
+        <p>快来加入年会集赞活动吧！！</p>
+        <el-collapse accordion
+                     v-model="active_names">
+          <el-collapse-item title="规则阅读"
+                            name="1">
+            <h4>活动规则</h4>
+            <p>1、请上传一张你与“WISH”“W”（单词或字母）的合影。</p>
+            <p>2、并留下你想说的话。（字数不能少于20个字哦~）</p>
+            <p>即可参与本次活动，照片被点赞后将不得修改替换。快快上传照片并为自己拉票吧~</p>
+            <h4>点赞规则</h4>
+            <p>参与活动的同时也可为喜欢的照片点赞！</p>
+            <p>点赞次数有限哦~每人仅有5次点赞机会，点赞后不能取消。</p>
+            <h4 style="color:#ff4949;">活动截止时间为：2019年1月18日17:00</h4>
+            <el-button @click.prevent="read"
+                       type="text">已读，进入活动！</el-button>
+          </el-collapse-item>
+          <el-collapse-item title="排名"
+                            v-if="self && self.rule_read"
+                            name="3">
+            <div v-for="user in sorted_list"
+                 :key="user.user_id"
+                 :class="rankClass(user)">
+              <span>{{user.user_id}}</span>
+              <div style="float:right">
+                <i class="el-icon-star-on rank-star">
+                  {{ user.num_star }}
+                </i>
+              </div>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="点赞"
+                            v-if="self && self.rule_read"
+                            name="2">
+            <el-row v-if="self">
+              <user-card :user_id="self.user_id"
+                         :auto_refresh="auto_refresh" />
+            </el-row>
+            <br/>
+            <el-row>
+              <el-input placeholder="感兴趣的用户"
+                        v-model="re_str">
+                <el-button @click="search"
+                           slot="append"
+                           class="el-icon-search">
+                </el-button>
+              </el-input>
+            </el-row>
+            <!-- <el-row>
+          <el-checkbox v-model="auto_refresh">
+            自动刷新
+          </el-checkbox>
+        </el-row> -->
+            <el-row :gutter="20"
+                    v-for="part in other_list_part"
+                    :key="part.id">
+              <el-col :span="24/num_part"
+                      v-for="user in part"
+                      :key="user.user_id">
+                <user-card :user_id='user.user_id'
+                           :auto_refresh="auto_refresh"
+                           class="card" />
+              </el-col>
+            </el-row>
+            <!-- <el-carousel>
+          <el-carousel-item v-for="user in other_list"
+                            :key="user.user_id">
             <user-card :user_id='user.user_id'
-                       class="card" />
-          </el-col>
-        </el-row>
-      </el-collapse-item>
-    </el-collapse>
+                       :auto_refresh="auto_refresh"
+                       class="" />
+          </el-carousel-item>
+        </el-carousel> -->
+          </el-collapse-item>
+        </el-collapse>
+      </el-main>
+      <el-footer class="footer">
+        <span>Designed by linkzhu</span>
+        <span>
+          <a>© 2019 ContextLogic Inc.</a>
+        </span>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 <style>
@@ -71,10 +103,33 @@
 .card {
   height: 300px;
 }
+.header-title {
+  color: #409eff;
+  text-align: center;
+}
+.header {
+  font-family: "ZCOOL KuaiLe", cursive;
+}
+.main {
+  font-family: "ZCOOL KuaiLe", cursive;
+}
+.footer {
+  font-family: "Lobster";
+  text-align: center;
+}
+.rank-star {
+  color: #e6a23c;
+}
+.rank-item {
+  font-size: 15px;
+}
+.rank-highlight {
+  background-color: #ebeef5;
+}
 </style>
 <script>
 import userCard from "./userCard";
-
+import headerlogo from "./images/headerlogo.png";
 const cut = function(arr, num) {
   var result = [];
   var tmp = [];
@@ -101,19 +156,20 @@ export default {
       self: null,
       other_list: [],
       other_list_part: [],
+      sorted_list: [],
       active_names: [],
-      re_str: null
+      re_str: null,
+      auto_refresh: true,
+      timer: null,
+      headerlogo: headerlogo
     };
   },
-  computed: {
-    sortedList: function() {
-      var user_list = this.other_list.concat([this.self]);
-      return _.sortBy(user_list, o => {
-        return -o.num_star;
-      });
-    }
-  },
+  computed: {},
   methods: {
+    rankClass: function(user) {
+      if (!user.in_star) return "rank-item";
+      else return "rank-item rank-highlight";
+    },
     read: function() {
       var vm = this;
       vm.api.call_json("read-rule", {}, resp => {
@@ -131,19 +187,44 @@ export default {
         }),
         vm.num_part
       );
+    },
+    getData: function() {
+      var vm = this;
+      vm.api.call_json("get-all", {}, user_list => {
+        vm.sorted_list = _.sortBy(user_list, o => {
+          return -o.num_star;
+        });
+        vm.self = _.filter(user_list, "self")[0];
+        if (vm.self && !vm.active_names.length) {
+          if (!vm.self.rule_read) vm.active_names = ["1"];
+          else vm.active_names = ["2"];
+        }
+        if (
+          !vm.other_list.length ||
+          vm.other_list.length + 1 < user_list.length
+        ) {
+          if (!vm.other_list.length)
+            vm.other_list = _.shuffle(_.filter(user_list, ["self", false]));
+          else {
+            var now_ids = new Set(_.map(user_list, "user_id"));
+            _.each(vm.other_list, user => {
+              now_ids.delete(user.user_id);
+            });
+            _.each(user_list, user => {
+              if (now_ids.has(user.user_id) && !user.self) {
+                vm.other_list.push(user);
+              }
+            });
+          }
+          vm.other_list_part = cut(vm.other_list, vm.num_part);
+        }
+      });
     }
   },
   mounted: function() {
-    var vm = this;
-    vm.api.call_json("get-all", {}, user_list => {
-      vm.self = _.filter(user_list, "self")[0];
-      if (vm.self) {
-        if (!vm.self.rule_read) vm.active_names = ["1"];
-        else vm.active_names = ["2"];
-      }
-      vm.other_list = _.shuffle(_.filter(user_list, ["self", false]));
-      vm.other_list_part = cut(vm.other_list, vm.num_part);
-    });
+    this.getData();
+    var func = _.bind(this.getData, this);
+    this.timer = setInterval(func, 10000);
   }
 };
 </script>

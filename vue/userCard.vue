@@ -19,15 +19,14 @@
                  action="api/upload-pic"
                  :show-file-list="false"
                  :on-success="successHook"
-                 :disabled="!user.self">
-        <a v-if="user.has_pic"
+                 :disabled="!user.self || user.num_star!=0">
+        <a v-show="user.has_pic"
            :href="`api/get-user-pic/${user.user_id}?v=${reload}`"
-           data-fancybox
-           :data-caption="user.des">
+           class="box">
           <img :src="`api/get-user-pic/${user.user_id}?v=${reload}`"
                class="image">
         </a>
-        <i v-else
+        <i v-show="!user.has_pic"
            class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
     </el-row>
@@ -36,10 +35,11 @@
             justify="center">
       <a v-show="!in_edit"
          href="#"
-         @click.prevent="in_edit=true">
-        <p v-if="user.des">
+         @click.prevent="in_edit=true;des_input = user.des;">
+        <div class="des-container"
+             v-if="user.des">
           {{ user.des }}
-        </p>
+        </div>
         <p v-else>
           点击添加你想说的话
         </p>
@@ -65,9 +65,9 @@
                  circle></el-button>
     </el-row>
     <el-row v-if="user && !user.self">
-      <p>
-        {{ user.des }}
-      </p>
+      <div class="des-container">
+        {{ user.des || '这人很懒，没留下什么话～' }}
+      </div>
     </el-row>
     <el-dialog v-if="user"
                title="点赞"
@@ -112,28 +112,47 @@
 }
 .star-on {
   font-size: 18px;
+  color: #e6a23c;
 }
 .star-off {
   font-size: 15px;
 }
+.self-star {
+  font-size: 18px;
+  color: #e6a23c;
+}
+.des-container {
+  width: 100%;
+  height: auto;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+  overflow: auto;
+}
 </style>
 <script>
+import { Message } from "element-ui";
 export default {
-  props: ["user_id"],
+  props: ["user_id", "auto_refresh"],
   data() {
     return {
       user: {},
       reload: 0,
       in_edit: false,
       des_input: null,
-      show_modal: false
+      show_modal: false,
+      timer: null
     };
   },
   computed: {
+    box: function() {
+      return $(this.$el).find(".box");
+    },
     starClass: function() {
       var vm = this;
-      if (vm.user.self || vm.user.in_star)
-        return "el-icon-star-on star-on font-effect-fire-animation";
+      if (vm.user.in_star)
+        return "el-icon-star-on star-on font-effect-shadow-multiple";
+      else if (vm.user.self) return "el-icon-star-on self-star";
       else return "el-icon-star-off star-off";
     },
     plusClass: function() {
@@ -146,7 +165,7 @@ export default {
       if (!vm.user_id) return;
       vm.api.call_json(`get-user/${vm.user_id}`, {}, user => {
         vm.user = user;
-        vm.des_input = user.des;
+        vm.reload++;
       });
     },
     successHook: function(resp, file, file_list) {
@@ -185,12 +204,26 @@ export default {
         resp => {
           vm.getData();
           vm.show_modal = false;
+          Message.success("点赞的都是真爱~谢谢你！");
         }
       );
+    },
+    refresh: function() {
+      if (!this.auto_refresh) return;
+      this.getData();
     }
   },
   mounted: function() {
+    var func = _.bind(this.refresh, this);
+    var vm = this;
     this.getData();
+    this.box.fancybox({
+      beforeShow: function(instance, current) {
+        current.opts.caption = vm.user.des || "这人很懒，没留下什么话～";
+      },
+      opts: {}
+    });
+    this.timer = setInterval(func, 5000);
   }
 };
 </script>

@@ -30,7 +30,8 @@ const apis = {
           user_id: user.user_id,
           self: user.user_id == user_id,
           num_star: (user.star && user.star.length) || 0,
-          rule_read: user.rule_read
+          rule_read: user.rule_read,
+          in_star: user.star && user.star.includes(user_id)
         });
       });
       res.json(user_data_list);

@@ -68,7 +68,13 @@ const model = {
     collection = this._get_collection();
     return new Promise(function(resolve, reject) {
       collection
-        .updateOne({ user_id: user_id }, { $set: { user_pic: pic_data } })
+        .updateOne(
+          {
+            user_id: user_id,
+            $or: [{ star: [] }, { star: { $exists: false } }]
+          },
+          { $set: { user_pic: pic_data } }
+        )
         .then(result => {
           resolve(result);
         })
@@ -137,4 +143,3 @@ const model = {
   }
 };
 module.exports = model;
-
