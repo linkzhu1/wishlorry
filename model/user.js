@@ -64,6 +64,24 @@ const model = {
         });
     });
   },
+  reset_user: function(user_id) {
+    collection = this._get_collection();
+    return new Promise(function(resolve, reject) {
+      collection
+        .updateOne(
+          {
+            user_id: user_id
+          },
+          { $unset: { user_pic: true, star: true } }
+        )
+        .then(result => {
+          resolve(result);
+        })
+        .catch(mongo_error => {
+          reject(`Mongo Error ${mongo_error.message}`);
+        });
+    });
+  },
   update_pic: function(user_id, pic_data) {
     collection = this._get_collection();
     return new Promise(function(resolve, reject) {
@@ -110,7 +128,12 @@ const model = {
           if (count < 5) {
             collection
               .updateOne(
-                { user_id: user_id },
+                {
+                  user_id: user_id,
+                  user_pic: {
+                    $exists: true
+                  }
+                },
                 { $addToSet: { star: self_user_id } }
               )
               .then(result => {

@@ -7,6 +7,7 @@ const api_handlers = require("./api");
 const mongo_client = require("./model/mongo_client");
 const cookie_parser = require("cookie-parser");
 const Session = require("./model/session");
+const User = require("./model/user");
 const multer = require("multer");
 const body_parser = require("body-parser");
 const config = require("./constants/config");
@@ -15,7 +16,10 @@ const check_login = function(req, res, next) {
   Session.getUser(req.cookies.session_key)
     .then(user_id => {
       req.user_id = user_id;
-      next();
+      User.get_user(user_id).then(user => {
+        req.user = user;
+        next();
+      });
     })
     .catch(msg => {
       console.log("Login Needed");
@@ -43,7 +47,7 @@ const check_login = function(req, res, next) {
 app.use(express.static("./vue/dist"));
 app.use(cookie_parser());
 app.use(body_parser.json());
-app.get("/status", function (req, res) {
+app.get("/status", function(req, res) {
   res.send("OK");
 });
 //get handlers
@@ -54,6 +58,8 @@ app.get("/", home_handler);
 //post handler
 app.post("/api/get-all", api_handlers.get_all_handler);
 app.post("/api/get-user/:user_id", api_handlers.get_user_handler);
+
+app.post("/api/reset-user", api_handlers.reset_handler);
 
 const upload = multer({
   limits: {

@@ -57,7 +57,8 @@
             </template>
             <el-row v-if="self">
               <user-card :user_id="self.user_id"
-                         :auto_refresh="auto_refresh" />
+                         :auto_refresh="auto_refresh"
+                         :allow_reset="self.can_reset" />
             </el-row>
             <br/>
             <el-row>
@@ -83,6 +84,7 @@
                       :key="user.user_id">
                 <user-card :user_id='user.user_id'
                            :auto_refresh="auto_refresh"
+                           :allow_reset="self.can_reset"
                            class="card" />
               </el-col>
             </el-row>

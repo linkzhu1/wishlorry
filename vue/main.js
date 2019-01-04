@@ -12,7 +12,8 @@ import {
   faAngleDoubleRight,
   faListOl,
   faBook,
-  faHeart
+  faHeart,
+  faRedo
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -23,7 +24,8 @@ library.add(
   faListOl,
   faBook,
   faHeart,
-  farHeart
+  farHeart,
+  faRedo
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);

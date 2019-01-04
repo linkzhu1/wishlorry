@@ -17,7 +17,8 @@ const map_f = function(user, self_user_id) {
     has_pic: !_.isEmpty(result.user_pic),
     num_star: result.num_star,
     in_star: result.in_star,
-    des: result.des
+    des: result.des,
+    can_reset: user.can_reset
   };
 };
 const apis = {
@@ -31,7 +32,8 @@ const apis = {
           self: user.user_id == user_id,
           num_star: (user.star && user.star.length) || 0,
           rule_read: user.rule_read,
-          in_star: user.star && user.star.includes(user_id)
+          in_star: user.star && user.star.includes(user_id),
+          can_reset: user.can_reset
         });
       });
       res.json(user_data_list);
@@ -91,6 +93,22 @@ const apis = {
             res.send("Update Des Failed");
           });
       }
+    }
+  },
+  reset_handler: function(req, res) {
+    var self_user = req.user;
+    var user_id = req.body.user_id;
+    if (!self_user.can_reset) {
+      res.status(400).json({ msg: "无重置权限" });
+    } else {
+      User.reset_user(user_id)
+        .then(mongo_result => {
+          res.json({});
+        })
+        .catch(msg => {
+          console.log(msg);
+          res.send("Reset user failed");
+        });
     }
   },
   star_user_handler: function(req, res) {

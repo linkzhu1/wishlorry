@@ -21,6 +21,10 @@
           </div>
         </div>
       </div>
+      <span v-if="allow_reset"
+            @click.prevent="beforeReset">
+        <i class="fas fa-redo btn-reset"></i>
+      </span>
     </div>
     <el-row v-if="user"
             type="flex"
@@ -94,6 +98,20 @@
                    @click="star">点赞</el-button>
       </span>
     </el-dialog>
+    <el-dialog v-if="user && allow_reset"
+               title="重置"
+               :visible.sync="show_reset"
+               class="dialog"
+               width="100%">
+      <span>
+        确定要给重置{{ user.user_id }}吗？ 重置后会清空图片和点赞信息。
+      </span>
+      <span slot="footer">
+        <el-button @click="show_reset = false">取消</el-button>
+        <el-button type="success"
+                   @click="reset">重置</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 <style>
@@ -136,6 +154,10 @@
   color: #f56c6c;
   margin-right: 5px;
 }
+.btn-reset {
+  font-size: 15px;
+  color: red;
+}
 .des-container {
   width: 100%;
   height: auto;
@@ -157,7 +179,7 @@
 <script>
 import { Message } from "element-ui";
 export default {
-  props: ["user_id", "auto_refresh"],
+  props: ["user_id", "auto_refresh", "allow_reset"],
   data() {
     return {
       user: {},
@@ -165,6 +187,7 @@ export default {
       in_edit: false,
       des_input: null,
       show_modal: false,
+      show_reset: false,
       timer: null
     };
   },
@@ -204,6 +227,23 @@ export default {
         resp => {
           vm.getData();
           vm.in_edit = false;
+        }
+      );
+    },
+    beforeReset: function() {
+      this.show_reset = true;
+    },
+    reset: function() {
+      var vm = this;
+      vm.api.call_json(
+        "reset-user",
+        {
+          user_id: vm.user.user_id
+        },
+        resp => {
+          vm.getData();
+          vm.show_reset = false;
+          Message.success("成功");
         }
       );
     },
