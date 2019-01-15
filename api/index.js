@@ -67,14 +67,13 @@ const apis = {
   },
   get_pic_handler: function(req, res) {
     var user_id = req.params.user_id;
+    console.log(`Get pic for user ${user_id}`);
     User.get_user(user_id)
       .then(user => {
-        if (user) res.send(user.user_pic.buffer);
-        else res.send("");
+        if (user) res.send(user.user_pic.buffer).end();
       })
       .catch(msg => {
-        console.log(msg);
-        res.send("User Not Found");
+        res.status(400).json({ msg: `user ${user_id} not exist` });
       });
   },
   update_des_handler: function(req, res) {
