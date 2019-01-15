@@ -63,7 +63,7 @@ app.post("/api/reset-user", api_handlers.reset_handler);
 
 const upload = multer({
   limits: {
-    fileSize: 1024 * 1024 * 5
+    fileSize: 1024 * 1024 * 10
   }
 });
 app.post(

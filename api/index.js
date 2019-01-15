@@ -69,7 +69,8 @@ const apis = {
     var user_id = req.params.user_id;
     User.get_user(user_id)
       .then(user => {
-        res.send(user.user_pic.buffer);
+        if (user) res.send(user.user_pic.buffer);
+        else res.send("");
       })
       .catch(msg => {
         console.log(msg);
